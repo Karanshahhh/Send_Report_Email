@@ -1,0 +1,43 @@
+function send_Email() {  //Change Function name as you like
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report"); //Add your Sheet Name
+  var bodyEmail = "" //Add email body starting msg
+
+  // Add the company logo
+  var companyLogoUrl = "https://drive.google.com/uc?export=download&id=1txPkBMT5vAv-J0Kgi3leLdPSZmdWJTfh";
+  var logoHtml = "<img src='" + companyLogoUrl + "' style='float:right; height: 40px; margin-top: 0px; margin-right: 10px; margin-bottom: 0px;'>";
+
+  var totalRows = sheet.getLastRow();
+  var totalCols = sheet.getLastColumn();
+  var table = "<html><body><br><table style='border-collapse: collapse;'>"
+  var colVal = "";
+
+  // Add the heading and logo in the first row;
+  table += "<tr><th colspan='" + totalCols + "' style='position: relative; background-color:#739baf; font-weight:bold; font-size:18pt; text-align:middle; color: white; vertical-align: middle; border: 1px solid black; padding: 10px; margin-bottomA: 0;'>" + logoHtml + "Sales Report</th></tr>";//Add Report Headiing Here
+
+  for (var rowNo = 1; rowNo <= totalRows; rowNo++) {
+    table = table + "<tr>";
+    for (var colNo = 1; colNo <= totalCols; colNo++) {
+      var cell = sheet.getRange(rowNo, colNo);
+      colVal = cell.getDisplayValue();
+      var cellBackgroundColor = cell.getBackground();
+      var cellAlignment = cell.getHorizontalAlignment();
+      var cellFontColor = cell.getFontColor();
+      var cellFontWeight = cell.getFontWeight();
+      var cellFontFamily = cell.getFontFamily();
+      var cellFontStyle = cell.getFontStyle();
+
+      var cellBorder = "0.1px solid black"; // Basic border style
+
+      table += '<td style="font-size: 9pt; background-color:' + cellBackgroundColor + '; text-align:' + cellAlignment + '; color:' + cellFontColor + '; font-weight:' + cellFontWeight + '; font-family:' + cellFontFamily + '; font-style:' + cellFontStyle + '; border:' + cellBorder + ';">' + colVal + '</td>';
+    }
+    table += "</tr>";
+  }
+
+  bodyEmail += table + "</table><br><br>Kind Regards,<br> \\Tester  </body></html>";
+
+  var options = {
+    cc: "" // Replace with the actual CC email address
+  };
+
+  GmailApp.sendEmail("karanshho7@gmail.com", "Report", "", { htmlBody: bodyEmail, cc: options.cc });
+}
